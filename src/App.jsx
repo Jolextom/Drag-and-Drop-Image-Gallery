@@ -1,8 +1,17 @@
 import { useState } from "react";
 import "./App.css";
+import Navbar from "./components/Navbar";
+import Search from "./components/Search";
+import Upload from "./components/Upload";
 
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <div className="font-Inter">
+      <Navbar />
+      <Search />
+      <Upload />
+    </div>
+  );
 }
 
 export default App;
