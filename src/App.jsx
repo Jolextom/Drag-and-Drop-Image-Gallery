@@ -1,15 +1,12 @@
 import { useState } from "react";
 import "./App.css";
-import Navbar from "./components/Navbar";
-import Search from "./components/Search";
-import Upload from "./components/Upload";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <div className="font-Inter">
-      <Navbar />
-      <Search />
-      <Upload />
+      <Login />
     </div>
   );
 }
