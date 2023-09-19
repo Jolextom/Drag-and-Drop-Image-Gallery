@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Error from "../components/Error";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
+import { useGlobalContext } from "../context";
 
 const Login = () => {
   const [firstName, setFirstName] = useState("");
@@ -9,11 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState({ color: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
-  // const [user, setUser] = useState({});
-
-  // onAuthStateChanged(auth, (currentUser) => {
-  //   setUser(currentUser);
-  // });
+  const { user, setUser } = useGlobalContext();
 
   const clearErrorAfterDelay = () => {
     setTimeout(() => {
@@ -31,10 +28,9 @@ const Login = () => {
 
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
-      console.log(user);
       setIsLoading(false);
       setError({ color: "", message: "" });
-      // setUser(user);
+      setUser(user);
     } catch (error) {
       setError({ color: "red", message: error.message });
       setIsLoading(false);
