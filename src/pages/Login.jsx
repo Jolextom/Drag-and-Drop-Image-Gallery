@@ -1,16 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Error from "../components/Error";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useGlobalContext } from "../context";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState({ color: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useGlobalContext();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setUser(user);
+      } else {
+        // User is signed out or authentication state not initialized
+        console.log("User signed out or authentication state not initialized");
+      }
+    });
+
+    return () => {
+      // Unsubscribe from the auth state listener when the component unmounts
+      unsubscribe();
+    };
+  }, [auth]);
 
   const clearErrorAfterDelay = () => {
     setTimeout(() => {
@@ -30,7 +53,11 @@ const Login = () => {
       const user = await signInWithEmailAndPassword(auth, email, password);
       setIsLoading(false);
       setError({ color: "", message: "" });
-      setUser(user);
+      await updateProfile(user.user, {
+        displayName: firstName,
+      });
+
+      navigate("/");
     } catch (error) {
       setError({ color: "red", message: error.message });
       setIsLoading(false);

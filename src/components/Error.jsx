@@ -2,12 +2,11 @@ import React from "react";
 
 const Error = (error) => {
   return (
-    <div className="">
+    <div>
       <div
         class={` absolute top-0  w-full flex  justify-center px-3 py-4 mx-auto items-center p-4 mb-4 text-sm text-${error.color}-800 rounded-lg bg-${error.color}-50 dark:bg-gray-800 dark:text-${error.color}-400`}
         role="alert"
       >
-        {console.log(error.color)}
         <svg
           class="flex-shrink-0 inline w-4 h-4 mr-3"
           aria-hidden="true"

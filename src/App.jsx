@@ -1,23 +1,20 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <div className="font-Inter">
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+
+          <Route path="/login" element={<Login />} />
+        </Routes>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 
