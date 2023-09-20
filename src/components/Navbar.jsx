@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import React from "react";
+import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
-import { useGlobalContext } from "../context";
 import { useNavigate } from "react-router-dom";
+import { useConfirmUser } from "../hooks/confirmUser";
 
 const Navbar = () => {
   const navigate = useNavigate();
-
-  const { user, setUser } = useGlobalContext();
-
+  const { user } = useConfirmUser();
+  console.log(user);
   const handleLogin_Out = async () => {
     try {
       if (!user) {
@@ -20,24 +19,6 @@ const Navbar = () => {
       console.log(error.message);
     }
   };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        setUser(user);
-      } else {
-        // User is signed out or authentication state not initialized
-        console.log("User signed out or authentication state not initialized");
-        setUser(null);
-      }
-    });
-
-    return () => {
-      // Unsubscribe from the auth state listener when the component unmounts
-      unsubscribe();
-    };
-  }, [auth]);
 
   // console.log(displayName);
 
@@ -52,7 +33,7 @@ const Navbar = () => {
             </p>
 
             <span
-              className={`text-sm cursor-pointer ${
+              className={`ccursor-pointer ${
                 user ? "text-red-300" : "text-green-300"
               }`}
               onClick={handleLogin_Out}
