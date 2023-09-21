@@ -18,7 +18,7 @@ const ImageGrid = () => {
       image.tag.toLowerCase().includes(searchInput.toLowerCase())
     );
     setImageList(filtered);
-  }, [imageList, searchInput]);
+  }, [searchInput]);
 
   const handleDragEnd = (evt) => {
     const imageId = evt.item.getAttribute("data-id");
@@ -62,17 +62,17 @@ const ImageGrid = () => {
     fetchData(); // Call the fetchData function after component mounts
 
     // Initialize SortableJS when the component mounts
-    const container = document.getElementById("imageGrid");
+  }, []);
 
-    if (!user) {
-      console.log("login");
-    } else {
-      new Sortable(container, {
-        animation: 150,
-        onEnd: handleDragEnd, // Define the function to handle image reordering
-      });
-    }
-  }, [user]);
+  const container = document.getElementById("imageGrid");
+  if (!user) {
+    console.log("login");
+  } else {
+    new Sortable(container, {
+      animation: 150,
+      onEnd: handleDragEnd, // Define the function to handle image reordering
+    });
+  }
 
   return (
     <div
