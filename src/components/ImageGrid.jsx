@@ -7,7 +7,7 @@ import { useGlobalContext } from "../context";
 const ImageGrid = () => {
   const [imageList, setImageList] = useState([]);
   const imageCollectionRef = collection(db, "images");
-  const { user, setUser, searchInput } = useGlobalContext();
+  const { user, searchInput } = useGlobalContext();
 
   useEffect(() => {
     // Filter the images based on the search input
@@ -36,6 +36,7 @@ const ImageGrid = () => {
         const imageData = doc.data();
         imageList.push(imageData);
       });
+      console.log(imageList);
       setImageList(imageList);
     });
 
@@ -65,14 +66,14 @@ const ImageGrid = () => {
   }, []);
 
   const container = document.getElementById("imageGrid");
-  if (!user) {
-    console.log("login");
-  } else {
-    new Sortable(container, {
-      animation: 150,
-      onEnd: handleDragEnd, // Define the function to handle image reordering
-    });
-  }
+  new Sortable(container, {
+    animation: 150,
+    onEnd: handleDragEnd, // Define the function to handle image reordering
+  });
+  // if (!user) {
+  //   console.log("login");
+  // } else {
+  // }
 
   return (
     <div
