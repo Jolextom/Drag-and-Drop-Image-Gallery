@@ -1,6 +1,8 @@
 import React from "react";
+import { useGlobalContext } from "../context";
 
 const Search = () => {
+  const { searchInput, setSearchInput } = useGlobalContext();
   return (
     <div className="container_lg py-5 h-fit border-b">
       <div className="flex">
@@ -26,6 +28,8 @@ const Search = () => {
                 name="image search"
                 className=" w-full bg-transparent font-medium text-2xl outline-none"
                 placeholder="search here..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </form>
           </div>
@@ -47,7 +51,7 @@ const Search = () => {
             </svg>
           </div>
         </div>
-        <div className="flex justify-between flex-1 items-center p-3 px-4 border border-l-0 rounded-e-2xl">
+        {/* <div className="flex justify-between flex-1 items-center p-3 px-4 border border-l-0 rounded-e-2xl">
           <div className="grid place-items-center bg-slate-800 text-white py-1 px-3 rounded-xl font-bold">
             <h4>Projects</h4>
           </div>
@@ -57,16 +61,7 @@ const Search = () => {
           <div className="grid place-items-center bg-transparent text-black border py-1 px-3 rounded-xl font-bold">
             <h4>Projects</h4>
           </div>
-          <div className="grid place-items-center bg-transparent text-black border py-1 px-3 rounded-xl font-bold">
-            <h4>Projects</h4>
-          </div>
-          <div className="grid place-items-center bg-transparent text-black border py-1 px-3 rounded-xl font-bold">
-            <h4>Projects</h4>
-          </div>
-          <div className="grid place-items-center bg-transparent text-black border py-1 px-3 rounded-xl font-bold">
-            <h4>Projects</h4>
-          </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

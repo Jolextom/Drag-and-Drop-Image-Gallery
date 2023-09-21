@@ -4,8 +4,9 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser, searchInput, setSearchInput }}>
       {children}
     </AppContext.Provider>
   );
