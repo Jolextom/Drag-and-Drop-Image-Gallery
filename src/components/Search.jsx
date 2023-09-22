@@ -34,7 +34,7 @@ const Search = () => {
             </form>
           </div>
 
-          <div className="self-center">
+          <div className="self-center " onClick={() => setSearchInput("")}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
