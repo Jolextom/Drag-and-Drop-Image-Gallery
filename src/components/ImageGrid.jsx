@@ -70,11 +70,6 @@ const ImageGrid = () => {
     });
   }, []);
 
-  const container = document.getElementById("imageGrid");
-  new Sortable(container, {
-    animation: 150,
-    onEnd: handleDragEnd, // Define the function to handle image reordering
-  });
   // if (!user) {
   //   console.log("login");
   // } else {
