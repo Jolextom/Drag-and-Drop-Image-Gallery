@@ -10,8 +10,8 @@ const ImageGrid = () => {
   const imageCollectionRef = collection(db, "images");
   const [loading, setLoading] = useState(true);
   const { user, searchInput } = useGlobalContext();
-  const sortableContainerRef = useRef(null);
-  const sortableInstanceRef = useRef(null);
+  const sortableContainerRef = useRef(null); // Reference to the Sortable container
+  const sortableInstanceRef = useRef(null); // Reference to the Sortable instance
 
   const fetchData = async () => {
     try {
@@ -59,18 +59,6 @@ const ImageGrid = () => {
     // or make an API call to update the order in your database
   };
 
-  const handleDragStart = (evt) => {
-    if (!user) {
-      // Prevent dragging if the user is not logged in
-      evt.preventDefault();
-
-      // Set a custom cursor style to indicate that dragging is not allowed
-      evt.dataTransfer.effectAllowed = "none";
-      evt.dataTransfer.dropEffect = "none";
-      evt.target.style.cursor = "not-allowed";
-    }
-  };
-
   useEffect(() => {
     const unsubscribe = onSnapshot(imageCollectionRef, (snapshot) => {
       const imageList = [];
@@ -87,13 +75,17 @@ const ImageGrid = () => {
   }, []);
 
   useEffect(() => {
-    if (sortableContainerRef.current) {
+    if (sortableContainerRef.current && user) {
+      // Create or update the Sortable instance when user is signed in
       sortableInstanceRef.current = new Sortable(sortableContainerRef.current, {
         animation: 150,
         onEnd: handleDragEnd,
       });
+    } else {
+      // Destroy the Sortable instance when user is signed out
+      destroySortableInstance();
     }
-  }, [imageList, searchInput]);
+  }, [imageList, searchInput, user]);
 
   if (loading) {
     return <Loading />;
@@ -122,10 +114,11 @@ const ImageGrid = () => {
           </div>
         </div>
       )}
+
       <div ref={sortableContainerRef} className="resp_grid p-4 relative">
         {imageList.length === 0 ? (
           <div className="grid place-items-center py-3 absolute top-0 w-full">
-            <div className="ml-4 text-xs inline-flex gap-3 items-center font-bold leading-sm uppercase px-3 py-1 bg-orange-200 text-orange-700 rounded-full">
+            <div className=" ml-4 text-xs inline-flex gap-3 items-center font-bold leading-sm uppercase px-3 py-1 bg-orange-200 text-orange-700 rounded-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -137,7 +130,7 @@ const ImageGrid = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
                 />
               </svg>
               <p>Tag not found. Please try a different tag.</p>
@@ -148,9 +141,7 @@ const ImageGrid = () => {
             <div
               key={image.id}
               data-id={image.id}
-              className="h-32 object-cover relative"
-              draggable={user ? true : false}
-              onDragStart={handleDragStart}
+              className="w-full h-32 object-cover relative"
             >
               <img
                 src={image.url}
