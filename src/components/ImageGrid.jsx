@@ -115,7 +115,10 @@ const ImageGrid = () => {
         </div>
       )}
 
-      <div ref={sortableContainerRef} className="resp_grid p-4 relative">
+      <div
+        ref={sortableContainerRef}
+        className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:grid-cols-5 lg:grid-cols-6 p-4 relative"
+      >
         {imageList.length === 0 ? (
           <div className="grid place-items-center py-3 absolute top-0 w-full">
             <div className=" ml-4 text-xs inline-flex gap-3 items-center font-bold leading-sm uppercase px-3 py-1 bg-orange-200 text-orange-700 rounded-full">
@@ -141,7 +144,7 @@ const ImageGrid = () => {
             <div
               key={image.id}
               data-id={image.id}
-              className="w-full h-32 object-cover relative"
+              className=" h-36 object-cover relative"
             >
               <img
                 src={image.url}

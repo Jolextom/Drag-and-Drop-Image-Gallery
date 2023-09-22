@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useGlobalContext } from "../context";
 
 const Search = () => {
   const { searchInput, setSearchInput } = useGlobalContext();
+
+  useEffect(() => {
+    setSearchInput("");
+  }, []);
+
   return (
     <div className="container_lg py-5 h-fit border-b">
       <div className="flex">
