@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { db } from "../../firebase/firebase";
 import { getDocs, collection, onSnapshot } from "firebase/firestore";
 import Sortable from "sortablejs";
@@ -11,6 +11,7 @@ const ImageGrid = () => {
   const [loading, setLoading] = useState(true);
   const { user, searchInput } = useGlobalContext();
   const sortableContainerRef = useRef(null);
+  const sortableInstanceRef = useRef(null);
 
   const fetchData = async () => {
     try {
@@ -23,30 +24,24 @@ const ImageGrid = () => {
       setImageList(imageList);
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.error(error);
+    }
+  };
+
+  const destroySortableInstance = () => {
+    if (sortableInstanceRef.current) {
+      sortableInstanceRef.current.destroy();
+      sortableInstanceRef.current = null;
     }
   };
 
   useEffect(() => {
-    // Fetch the initial data using getDocs
     setLoading(true);
-
-    fetchData(); // Call the fetchData function after component mounts
+    fetchData();
   }, []);
 
   useEffect(() => {
-    if (sortableContainerRef.current) {
-      // Initialize SortableJS when the image list changes
-      new Sortable(sortableContainerRef.current, {
-        animation: 150,
-        onEnd: handleDragEnd, // Define the function to handle image reordering
-      });
-    }
-  }, [searchInput, imageList]);
-
-  useEffect(() => {
-    if (searchInput === "") {
-      // If search input is empty, reset the image list to the original list
+    if (!searchInput) {
       fetchData();
       return;
     }
@@ -59,10 +54,21 @@ const ImageGrid = () => {
   const handleDragEnd = (evt) => {
     const imageId = evt.item.getAttribute("data-id");
     const newIndex = Array.from(evt.to.children).indexOf(evt.item);
-
     // Update the image order in your state or database
     // You can use setImageList to reorder the images in your state
     // or make an API call to update the order in your database
+  };
+
+  const handleDragStart = (evt) => {
+    if (!user) {
+      // Prevent dragging if the user is not logged in
+      evt.preventDefault();
+
+      // Set a custom cursor style to indicate that dragging is not allowed
+      evt.dataTransfer.effectAllowed = "none";
+      evt.dataTransfer.dropEffect = "none";
+      evt.target.style.cursor = "drag";
+    }
   };
 
   useEffect(() => {
@@ -72,7 +78,6 @@ const ImageGrid = () => {
         const imageData = doc.data();
         imageList.push(imageData);
       });
-      console.log(imageList);
       setImageList(imageList);
     });
 
@@ -81,36 +86,91 @@ const ImageGrid = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (sortableContainerRef.current) {
+      sortableInstanceRef.current = new Sortable(sortableContainerRef.current, {
+        animation: 150,
+        onEnd: handleDragEnd,
+      });
+    }
+  }, [imageList, searchInput]);
+
   if (loading) {
     return <Loading />;
   }
 
   return (
-    <div
-      ref={sortableContainerRef}
-      className="grid grid-cols-2 gap-4 sm:grid-cols-5 lg:grid-cols-6 p-2"
-    >
-      {imageList.length === 0 ? (
-        <p className="text-center text-gray-500">Tag not found.</p>
+    <>
+      {user ? (
+        ""
       ) : (
-        imageList.map((image) => (
-          <div
-            key={image.id}
-            data-id={image.id} // Set the image ID as a data attribute
-            className="w-full h-auto object-cover relative"
-          >
-            <img
-              src={image.url}
-              alt={image.id}
-              className="w-full h-full object-cover"
-            />
-            <span className="absolute top-1.5 left-1.5 bg-white text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
-              {image.tag}
-            </span>
+        <div className="grid place-items-center py-3">
+          <div class="ml-4 text-xs inline-flex gap-3  items-center font-bold leading-sm uppercase px-3 py-1  bg-blue-200 text-blue-700 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+              />
+            </svg>
+            <p>You cannot use the drag and drop feature without signing in.</p>
           </div>
-        ))
+        </div>
       )}
-    </div>
+      <div
+        ref={sortableContainerRef}
+        className="grid grid-cols-2 gap-4 sm:grid-cols-5 lg:grid-cols-6 p-4 relative"
+      >
+        {imageList.length === 0 ? (
+          <div className="grid place-items-center py-3 absolute top-0 w-full">
+            <div class="ml-4 text-xs inline-flex gap-3  items-center font-bold leading-sm uppercase px-3 py-1  bg-orange-200 text-orange-700 rounded-full">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </svg>
+
+              <p>Tag not found. Please try a different tag.</p>
+            </div>
+          </div>
+        ) : (
+          imageList.map((image) => (
+            <div
+              key={image.id}
+              data-id={image.id}
+              className="w-52 aspect-square object-cover relative"
+              draggable={user ? true : false}
+              onDragStart={handleDragStart}
+            >
+              <img
+                src={image.url}
+                alt={image.id}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute top-1.5 left-1.5 bg-white text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+                {image.tag}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </>
   );
 };
 
