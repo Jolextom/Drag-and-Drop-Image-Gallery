@@ -3,10 +3,12 @@ import { db } from "../../firebase/firebase";
 import { getDocs, collection, onSnapshot } from "firebase/firestore";
 import Sortable from "sortablejs";
 import { useGlobalContext } from "../context";
+import Loading from "./Loading";
 
 const ImageGrid = () => {
   const [imageList, setImageList] = useState([]);
   const imageCollectionRef = collection(db, "images");
+  const [loading, setLoading] = useState(true);
   const { user, searchInput } = useGlobalContext();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const ImageGrid = () => {
 
   useEffect(() => {
     // Fetch the initial data using getDocs
+    setLoading(true);
     const fetchData = async () => {
       try {
         const data = await getDocs(imageCollectionRef);
@@ -54,8 +57,10 @@ const ImageGrid = () => {
           ...doc.data(),
           id: doc.id,
         }));
+        setLoading(false);
         setImageList(imageList);
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     };
@@ -64,16 +69,17 @@ const ImageGrid = () => {
 
     // Initialize SortableJS when the component mounts
     const container = document.getElementById("imageGrid");
-    new Sortable(container, {
-      animation: 150,
-      onEnd: handleDragEnd, // Define the function to handle image reordering
-    });
+    if (container) {
+      new Sortable(container, {
+        animation: 150,
+        onEnd: handleDragEnd, // Define the function to handle image reordering
+      });
+    }
   }, []);
 
-  // if (!user) {
-  //   console.log("login");
-  // } else {
-  // }
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div
