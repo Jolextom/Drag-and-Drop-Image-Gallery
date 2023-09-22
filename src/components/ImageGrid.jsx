@@ -40,16 +40,18 @@ const ImageGrid = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (!searchInput) {
-      fetchData();
-      return;
-    }
-    const filtered = imageList.filter((image) =>
-      image.tag.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setImageList(filtered);
-  }, [searchInput]);
+  // useEffect(() => {
+  //   if (!searchInput) {
+  //     fetchData();
+  //     return;
+  //   }
+
+  //   const filtered = imageList.filter((image) => {
+  //     return ;
+  //   });
+  //   console.log(filtered);
+  //   setImageList(filtered);
+  // }, [searchInput, imageList]);
 
   const handleDragEnd = (evt) => {
     const imageId = evt.item.getAttribute("data-id");
@@ -74,8 +76,15 @@ const ImageGrid = () => {
     };
   }, []);
 
+  const filteredImages = imageList.filter((image) => {
+    return searchInput.toLowerCase() === ""
+      ? true // Include all images when search input is empty
+      : image.tag.toLowerCase().includes(searchInput.toLowerCase());
+  });
+
   useEffect(() => {
     if (sortableContainerRef.current && user) {
+      console.log(sortableContainerRef.current);
       // Create or update the Sortable instance when user is signed in
       sortableInstanceRef.current = new Sortable(sortableContainerRef.current, {
         animation: 150,
@@ -119,7 +128,7 @@ const ImageGrid = () => {
         ref={sortableContainerRef}
         className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:grid-cols-5 lg:grid-cols-6 p-4 relative"
       >
-        {imageList.length === 0 ? (
+        {filteredImages.length === 0 && (
           <div className="grid place-items-center py-3 absolute top-0 w-full">
             <div className=" ml-4 text-xs inline-flex gap-3 items-center font-bold leading-sm uppercase px-3 py-1 bg-orange-200 text-orange-700 rounded-full">
               <svg
@@ -136,11 +145,15 @@ const ImageGrid = () => {
                   d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
                 />
               </svg>
-              <p>Tag not found. Please try a different tag.</p>
+              <p>
+                No image found. Please check your internet or try a different
+                tag.
+              </p>
             </div>
           </div>
-        ) : (
-          imageList.map((image) => (
+        )}
+        {filteredImages.map((image) => {
+          return (
             <div
               key={image.id}
               data-id={image.id}
@@ -155,8 +168,8 @@ const ImageGrid = () => {
                 {image.tag}
               </span>
             </div>
-          ))
-        )}
+          );
+        })}
       </div>
     </>
   );
