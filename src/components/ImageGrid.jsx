@@ -90,13 +90,16 @@ const ImageGrid = () => {
         <div
           key={image.id}
           data-id={image.id} // Set the image ID as a data attribute
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover relative"
         >
           <img
             src={image.url}
             alt={image.id}
             className="w-full h-full object-cover"
           />
+          <span class="absolute top-1.5 left-1.5 bg-white text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded ">
+            {image.tag}
+          </span>
         </div>
       ))}
     </div>
