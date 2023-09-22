@@ -154,7 +154,7 @@ const ImageGrid = () => {
             <div
               key={image.id}
               data-id={image.id}
-              className="w-52 aspect-square object-cover relative"
+              className="w-48 aspect-square object-cover relative"
               draggable={user ? true : false}
               onDragStart={handleDragStart}
             >
