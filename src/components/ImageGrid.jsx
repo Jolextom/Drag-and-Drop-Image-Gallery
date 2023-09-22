@@ -28,13 +28,6 @@ const ImageGrid = () => {
     }
   };
 
-  const destroySortableInstance = () => {
-    if (sortableInstanceRef.current) {
-      sortableInstanceRef.current.destroy();
-      sortableInstanceRef.current = null;
-    }
-  };
-
   useEffect(() => {
     setLoading(true);
     fetchData();
@@ -82,9 +75,17 @@ const ImageGrid = () => {
       : image.tag.toLowerCase().includes(searchInput.toLowerCase());
   });
 
+  const destroySortableInstance = () => {
+    if (sortableInstanceRef.current) {
+      sortableInstanceRef.current.destroy();
+      sortableInstanceRef.current = null;
+    }
+  };
+
   useEffect(() => {
     if (sortableContainerRef.current && user) {
       console.log(sortableContainerRef.current);
+      destroySortableInstance();
       // Create or update the Sortable instance when user is signed in
       sortableInstanceRef.current = new Sortable(sortableContainerRef.current, {
         animation: 150,
