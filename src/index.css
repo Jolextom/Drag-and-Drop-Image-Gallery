@@ -8,3 +8,11 @@
   padding-inline: 1.5rem;
   margin: 0 auto;
 }
+
+.resp_grid{
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+
+}
