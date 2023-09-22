@@ -67,7 +67,7 @@ const ImageGrid = () => {
       // Set a custom cursor style to indicate that dragging is not allowed
       evt.dataTransfer.effectAllowed = "none";
       evt.dataTransfer.dropEffect = "none";
-      evt.target.style.cursor = "drag";
+      evt.target.style.cursor = "not-allowed";
     }
   };
 
@@ -101,18 +101,16 @@ const ImageGrid = () => {
 
   return (
     <>
-      {user ? (
-        ""
-      ) : (
+      {!user && (
         <div className="grid place-items-center py-3">
-          <div class="ml-4 text-xs inline-flex gap-3  items-center font-bold leading-sm uppercase px-3 py-1  bg-blue-200 text-blue-700 rounded-full">
+          <div className="ml-4 text-xs inline-flex gap-3  items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="currentColor"
-              class="w-6 h-6"
+              className="w-6 h-6"
             >
               <path
                 strokeLinecap="round"
@@ -127,14 +125,14 @@ const ImageGrid = () => {
       <div ref={sortableContainerRef} className="resp_grid p-4 relative">
         {imageList.length === 0 ? (
           <div className="grid place-items-center py-3 absolute top-0 w-full">
-            <div class="ml-4 text-xs inline-flex gap-3  items-center font-bold leading-sm uppercase px-3 py-1  bg-orange-200 text-orange-700 rounded-full">
+            <div className="ml-4 text-xs inline-flex gap-3 items-center font-bold leading-sm uppercase px-3 py-1 bg-orange-200 text-orange-700 rounded-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                class="w-6 h-6"
+                className="w-6 h-6"
               >
                 <path
                   strokeLinecap="round"
@@ -142,7 +140,6 @@ const ImageGrid = () => {
                   d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
                 />
               </svg>
-
               <p>Tag not found. Please try a different tag.</p>
             </div>
           </div>
@@ -151,7 +148,7 @@ const ImageGrid = () => {
             <div
               key={image.id}
               data-id={image.id}
-              className=" h-32  object-cover relative"
+              className="h-32 object-cover relative"
               draggable={user ? true : false}
               onDragStart={handleDragStart}
             >
