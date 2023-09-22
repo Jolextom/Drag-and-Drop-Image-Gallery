@@ -63,6 +63,11 @@ const ImageGrid = () => {
     fetchData(); // Call the fetchData function after component mounts
 
     // Initialize SortableJS when the component mounts
+    const container = document.getElementById("imageGrid");
+    new Sortable(container, {
+      animation: 150,
+      onEnd: handleDragEnd, // Define the function to handle image reordering
+    });
   }, []);
 
   const container = document.getElementById("imageGrid");
