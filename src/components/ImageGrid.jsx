@@ -33,18 +33,6 @@ const ImageGrid = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   if (!searchInput) {
-  //     fetchData();
-  //     return;
-  //   }
-
-  //   const filtered = imageList.filter((image) => {
-  //     return ;
-  //   });
-  //   console.log(filtered);
-  //   setImageList(filtered);
-  // }, [searchInput, imageList]);
 
   const handleDragEnd = (evt) => {
     const imageId = evt.item.getAttribute("data-id");
@@ -84,7 +72,6 @@ const ImageGrid = () => {
 
   useEffect(() => {
     if (sortableContainerRef.current && user) {
-      console.log(sortableContainerRef.current);
       destroySortableInstance();
       // Create or update the Sortable instance when user is signed in
       sortableInstanceRef.current = new Sortable(sortableContainerRef.current, {
