@@ -18,18 +18,24 @@ const Upload = () => {
       const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
 
       // console.log(imageRef);
-      try {
-        await uploadBytes(imageRef, imageUpload);
-        setImageUpload(null);
-        const downloadUrlLink = await getDownloadURL(imageRef);
 
-        await addDoc(imageCollectionRef, { tag: tag, url: downloadUrlLink });
-        console.log("image uploaded sucessfully");
-        document.getElementById("imageInput").value = "";
-        setTag("");
-      } catch (error) {
-        console.log(error);
-      }
+      uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        getDownloadURL(imageRef).then((downloadUrlLink) => {
+          addDoc(imageCollectionRef, { tag: tag, url: downloadUrlLink })
+            .then(() => {
+              console.log("Image uploaded successfully");
+              setImageUpload(null);
+              setTag("");
+            })
+            .catch((error) => {
+              console.error("Error adding image to Firestore: ", error);
+            });
+        });
+
+        // console.log("image uploaded sucessfully");
+        // document.getElementById("imageInput").value = "";
+        // setTag("");
+      });
     }
   };
   return (

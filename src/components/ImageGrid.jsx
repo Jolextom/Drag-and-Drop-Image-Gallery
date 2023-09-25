@@ -33,7 +33,6 @@ const ImageGrid = () => {
     fetchData();
   }, []);
 
-
   const handleDragEnd = (evt) => {
     const imageId = evt.item.getAttribute("data-id");
     const newIndex = Array.from(evt.to.children).indexOf(evt.item);
